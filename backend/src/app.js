@@ -11,6 +11,7 @@ import recordRoutes from "./routes/recordRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 
+
 const app = express();
 
 app.use(cors());
