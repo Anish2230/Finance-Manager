@@ -2,12 +2,9 @@ import dotenv from "dotenv";
 dotenv.config();
 import express from "express";
 import cors from "cors";
-console.log("DATABASE_URL:", process.env.DATABASE_URL);
-console.log("Before authRoutes import");
 import prisma from "./utils/prisma.js";
 import authRoutes from "./routes/authRoutes.js";
-
-console.log("After authRoutes import");
+import path from "path";
 import { protect } from "./middleware/authMiddleware.js";
 import { authorize } from "./middleware/roleMiddleware.js";
 import recordRoutes from "./routes/recordRoutes.js";
@@ -22,6 +19,17 @@ app.use("/api/auth", authRoutes);
 app.use("/api/records", recordRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/users", userRoutes);
+
+const __dirname = path.resolve();
+
+// Serve frontend build
+app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
+// Catch-all route
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
+});
+
 
 app.get("/", (req, res) => {
   res.send("Finance Manager API Running 🚀");
@@ -57,3 +65,7 @@ async function startServer() {
 startServer();
 
 process.on('exit', (code) => { console.log('Process exiting with code:', code); });
+
+
+
+
