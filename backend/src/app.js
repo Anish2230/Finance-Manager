@@ -17,16 +17,22 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+
+// ✅ Health route (important for Render)
+app.get("/", (req, res) => {
+  res.status(200).send("Backend is LIVE 🚀");
+});
+
+// ✅ Extra health check (VERY useful)
+app.get("/api/health", (req, res) => {
+  res.json({ status: "working ✅" });
+});
+
 // ✅ API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/records", recordRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/users", userRoutes);
-
-// ✅ Health route (important for Render)
-app.get("/", (req, res) => {
-  res.send("Finance Manager API Running 🚀");
-});
 
 // ✅ Test routes
 app.get("/api/test", protect, (req, res) => {
@@ -38,17 +44,6 @@ app.get("/api/test", protect, (req, res) => {
 
 app.get("/api/admin", protect, authorize("ADMIN"), (req, res) => {
   res.json({ message: "Admin only access ✅" });
-});
-
-const __dirname = path.resolve();
-
-// ✅ Serve frontend (optional, works fine on Render too)
-app.use(express.static(path.join(__dirname, "../frontend/dist")));
-
-// ❌ REMOVE app.get("*")
-// ✅ Replace with this (important fix)
-app.use((req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
 });
 
 const PORT = process.env.PORT || 8000;
